@@ -16,29 +16,28 @@ func ReadInput(year int, day int) (string, error) {
 	req, err := http.NewRequest("GET", url, nil)
 
 	if err != nil {
-		fmt.Printf("Error creating HTTP request: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("error creating http request: %v", err)
 	}
 
 	// Use session token from environment variable
 	req.Header.Add("Cookie", "session="+os.Getenv("AOC_SESSION"))
 
 	resp, err := client.Do(req)
+
 	if err != nil {
-		fmt.Printf("Error making HTTP request: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("error making http request: %v", err)
 	}
+
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		fmt.Printf("Unexpected HTTP status: %d\n", resp.StatusCode)
-		return "", err
+		return "", fmt.Errorf("unexpected http status: %d", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
+
 	if err != nil {
-		fmt.Printf("Error reading response body: %v\n", err)
-		return "", err
+		return "", fmt.Errorf("error reading response body: %v", err)
 	}
 
 	return string(body), nil
